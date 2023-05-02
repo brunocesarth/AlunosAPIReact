@@ -1,8 +1,9 @@
-import './App.css';
 import React, { useState, useEffect } from 'react';
+import { Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
+import './App.css';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
-import { Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 import logoCadastro from './assets/cadastro.png';
 
 function App() {
@@ -21,19 +22,18 @@ function App() {
       idade: ''
     })
 
-  const abrirFecharModalIncluir = () => {
-    setModalIncluir(!modalIncluir);
-  }
-
-  const handleChange = e => {
-    const { name, value } = e.target;
-    setAlunoSelecionado({
-      ...alunoSelecionado,
-      [name]: value
-    });
-    console.log(alunoSelecionado);
-  }
-
+    const handleChange = e => {
+      const { name, value } = e.target;
+      setAlunoSelecionado({
+        ...alunoSelecionado,
+        [name]: value
+      });
+      console.log(alunoSelecionado);
+    }
+    
+    const abrirFecharModalIncluir = () => {
+      setModalIncluir(!modalIncluir);
+    }
 
   const pedidoGet = async () => {
     await axios.get(baseUrl)
@@ -66,7 +66,7 @@ function App() {
       <h3>Cadastro de Alunos</h3>
       <header>
         <img src={logoCadastro} alt="Cadastro" />
-        <button onClick={() => abrirFecharModalIncluir} className="btn btn-success">Incluir Novo Aluno</button>
+        <button onClick={() => abrirFecharModalIncluir()} className="btn btn-success">Incluir Novo Aluno</button>
       </header>
       <table className="table table-bordered">
         <thead>
@@ -119,7 +119,6 @@ function App() {
       </Modal >
     </div >
   );
-
 }
 
 export default App;
