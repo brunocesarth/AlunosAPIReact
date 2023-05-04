@@ -38,7 +38,8 @@ namespace AlunosApi
                 AddEntityFrameworkStores<AppDbContext>().
                 AddDefaultTokenProviders();
 
-            services.AddScoped<IAlunoService, AlunosService>();
+            services.AddScoped<IAuthenticate, AuthenticateService>();
+            services.AddScoped<AlunosService>();
 
             services.AddCors();
 
