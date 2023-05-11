@@ -31,7 +31,7 @@ namespace AlunosApi.Controllers
         {
             if (model.Password != model.ConfirmPassword)
             {
-                ModelState.AddModelError("ConfirmPasswor", "As senhas não conferem");
+                ModelState.AddModelError("ConfirmPassword", "As senhas não conferem");
                 return BadRequest(ModelState);
             }
 
