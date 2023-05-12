@@ -29,7 +29,7 @@ export default function NovoAluno() {
     }, alunoId)
 
     async function saveOrUpdate(event) {
-        event.preventDefault(); 
+        event.preventDefault();
         const data = {
             nome,
             email,

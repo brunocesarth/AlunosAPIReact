@@ -7,7 +7,11 @@ import logoCadastro from '../../assets/cadastro.png';
 import { FiEdit, FiUserX, FiXCircle } from 'react-icons/fi';
 
 export default function Alunos() {
-    const [nome, setNome] = useState('');
+
+    //Filtra dados
+    const [searchInput, setSearchInput] = useState('');
+    const [filtro, setFiltro] = useState([]);
+
     const [alunos, setAlunos] = useState([]);
 
     const email = localStorage.getItem('email');
@@ -18,6 +22,19 @@ export default function Alunos() {
     const authorization = {
         headers: {
             Authorization: `Bearer ${token}`
+        }
+    }
+
+    const searchAlunos = (searchValue) => {
+        setSearchInput(searchValue);
+        if (searchInput !== '') {
+            const dadosFiltrados = alunos.filter((item) => {
+                return Object.values(item).join('').toLowerCase()
+                    .includes(searchInput.toLowerCase())
+            });
+            setFiltro(dadosFiltrados);
+        } else {
+            setFiltro(alunos);
         }
     }
 
@@ -47,6 +64,17 @@ export default function Alunos() {
         }
     }
 
+    async function deleteAluno(id) {
+        try {
+            if (window.confirm('Deseja deletar o aluno de id = ' + id + '?')) {
+                await api.delete(`api/alunos/${id}`, authorization);
+                setAlunos(alunos.filter(aluno => aluno.id !== id));
+            }
+        } catch (error) {
+            alert('Não foi possível excluir o aluno');
+        }
+    }
+
 
     return (
         <div className="aluno-container">
@@ -59,29 +87,52 @@ export default function Alunos() {
                 </button>
             </header>
             <form>
-                <input type="text" placeholder="Nome" />
-                <button type="button" class='button'>
-                    Filtrar aluno por nome (parcial)
-                </button>
+                <input type="text"
+                    placeholder="Filtrar por nome..."
+                    onChange={(e) => searchAlunos(e.target.value)}
+                />
             </form>
+
             <h1>Relação de Alunos</h1>
-            <ul>
-                {alunos.map(aluno => (
-                    <li key={aluno.id}>
-                        <b>Nome: </b>{aluno.nome}<br /><br />
-                        <b>Email: </b>{aluno.email}<br /><br />
-                        <b>Idade: </b>{aluno.idade}<br /><br />
+            {searchInput.length > 1 ? (
+                <ul>
+                    {filtro.map(aluno => (
+                        <li key={aluno.id}>
+                            <b>Nome: </b>{aluno.nome}<br /><br />
+                            <b>Email: </b>{aluno.email}<br /><br />
+                            <b>Idade: </b>{aluno.idade}<br /><br />
 
-                        <button onClick={() => editAluno(aluno.id)} type="button">
-                            <FiEdit size="25" color="#17202A" />
-                        </button>
+                            <button onClick={() => editAluno(aluno.id)} type="button">
+                                <FiEdit size="25" color="#17202A" />
+                            </button>
 
-                        <button type="button">
-                            <FiUserX size="25" color="#17202A" />
-                        </button>
-                    </li>
-                ))}
-            </ul>
+                            <button onClick={() => deleteAluno(aluno.id)} type="button">
+                                <FiUserX size="25" color="#17202A" />
+                            </button>
+                        </li>
+                    ))}
+                </ul>
+            ) : (
+                <ul>
+                    {
+                        alunos.map(aluno => (
+                            <li key={aluno.id}>
+                                <b>Nome: </b>{aluno.nome}<br /><br />
+                                <b>Email: </b>{aluno.email}<br /><br />
+                                <b>Idade: </b>{aluno.idade}<br /><br />
+
+                                <button onClick={() => editAluno(aluno.id)} type="button">
+                                    <FiEdit size="25" color="#17202A" />
+                                </button>
+
+                                <button onClick={() => deleteAluno(aluno.id)} type="button">
+                                    <FiUserX size="25" color="#17202A" />
+                                </button>
+                            </li>
+                        ))
+                    }
+                </ul>
+            )}
         </div >
     )
 }
